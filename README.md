@@ -26,15 +26,15 @@
 | 3 | `CS` | Chip select (SPI) |
 | 4 | `RESET` | Reset pin |
 | 5 | `A0` | Data/Command switch |
-| 6 | `SDA` | MOSI (SPI) |
+| 6 | `SDA` | Master Output Slave Input (SPI) |
 | 7 | `SCK` | Serial Clock (SPI) |
 | 8 | `LED` | Backlight |
 
 | Pin | Name | Description |
 | :---: | :---: | --- |
 | 1 | `SD_CS` | Chip select (SPI) |
-| 2 | `SD_MOSI` | MOSI (SPI) |
-| 3 | `SD_MISO` | MISO (SPI) |
+| 2 | `SD_MOSI` | Master Output Slave Input (SPI) |
+| 3 | `SD_MISO` | Master Input Slave Output (SPI) |
 | 4 | `SD_SCK` | Serial Clock (SPI) |
 
 # License
