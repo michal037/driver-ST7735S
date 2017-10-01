@@ -19,6 +19,24 @@
 
 # Pins
 
+| Pin | Name | Description |
+| :---: | :---: | --- |
+| 1 | `VCC` | Power supply |
+| 2 | `GND` | Power ground |
+| 3 | `CS` | Chip select (SPI) |
+| 4 | `RESET` | Reset pin |
+| 5 | `A0` | Data/Command switch |
+| 6 | `SDA` | MOSI (SPI) |
+| 7 | `SCK` | Serial Clock (SPI) |
+| 8 | `LED` | Backlight |
+
+| Pin | Name | Description |
+| :---: | :---: | --- |
+| 1 | `SD_CS` | Chip select (SPI) |
+| 2 | `SD_MOSI` | MOSI (SPI) |
+| 3 | `SD_MISO` | MISO (SPI) |
+| 4 | `SD_SCK` | Serial Clock (SPI) |
+
 # License
 :page_facing_up: [MIT License](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/LICENSE)
 
