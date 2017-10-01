@@ -39,7 +39,7 @@
 
 
 # License
-:page_facing_up: [MIT License](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/LICENSE)
+[MIT License](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/LICENSE)
 
 Copyright (c) 2017 Michal Kozakiewicz, [github.com/michal037](https://github.com/michal037)
 
