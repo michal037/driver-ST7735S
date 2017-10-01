@@ -20,19 +20,19 @@
 ## [LCD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
 | Pin | Name | Description |
 | :---: | :---: | --- |
-| 1 | `VCC` | Power supply |
-| 2 | `GND` | Power ground |
-| 3 | `CS` | Chip select (SPI) |
-| 4 | `RESET` | Reset pin |
-| 5 | `A0` | Data/Command switch |
+| 1 | `VCC` | Power Supply |
+| 2 | `GND` | Power Ground |
+| 3 | `CS` | Chip Select (SPI) |
+| 4 | `RESET` | Reset Pin |
+| 5 | `A0` | Data/Command Switch |
 | 6 | `SDA` | Master Output Slave Input (SPI) |
 | 7 | `SCK` | Serial Clock (SPI) |
-| 8 | `LED` | White backlight |
+| 8 | `LED` | White Backlight |
 
 ## [SD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
 | Pin | Name | Description |
 | :---: | :---: | --- |
-| 1 | `SD_CS` | Chip select (SPI) |
+| 1 | `SD_CS` | Chip Select (SPI) |
 | 2 | `SD_MOSI` | Master Output Slave Input (SPI) |
 | 3 | `SD_MISO` | Master Input Slave Output (SPI) |
 | 4 | `SD_SCK` | Serial Clock (SPI) |
