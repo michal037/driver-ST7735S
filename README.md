@@ -5,13 +5,14 @@
 # Parameters
 * **Display size:** 1.8 inch
 * **Resolution:** 128(H) x 160(V) px
-* **Colors:** 262144
+* **Colours:** 262144
 * **Driver:** [ST7735S](https://github.com/michal037/driver-ST7735S/raw/master/datasheet/ST7735S_Datasheet_v1.1.pdf)
 * **Protocol:** [SPI](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus)
 * **Logic:** [CMOS](https://en.wikipedia.org/wiki/CMOS) and [TTL](https://en.wikipedia.org/wiki/Transistor%E2%80%93transistor_logic) compatible
 * **Technology:** [LCD](https://en.wikipedia.org/wiki/Liquid-crystal_display) [TFT](https://en.wikipedia.org/wiki/Thin-film_transistor)
-* **Operating temperature:** -30 to +85 C
 * **Additional:** Built-in [SD](https://en.wikipedia.org/wiki/Secure_Digital) card slot
+* **Version:** 1.1
+* **Operating temperature:** -30 to +85 C
 * **Dimensions:** 58,0 x 34,5 mm
 
 
