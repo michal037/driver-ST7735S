@@ -1,6 +1,6 @@
 # ST7735S display driver
-
 [![ST7735S front](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small.png)](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front.png)
+
 
 # Parameters
 * **Display size:** 1.8 inch
@@ -14,8 +14,9 @@
 * **Additional:** Built-in [SD](https://en.wikipedia.org/wiki/Secure_Digital) card slot
 * **Dimensions:** 58,0 x 34,5 mm
 
-# Pins
 
+# Pins
+## LCD
 | Pin | Name | Description |
 | :---: | :---: | --- |
 | 1 | `VCC` | Power supply |
@@ -27,12 +28,14 @@
 | 7 | `SCK` | Serial Clock (SPI) |
 | 8 | `LED` | Backlight |
 
+## SD
 | Pin | Name | Description |
 | :---: | :---: | --- |
 | 1 | `SD_CS` | Chip select (SPI) |
 | 2 | `SD_MOSI` | Master Output Slave Input (SPI) |
 | 3 | `SD_MISO` | Master Input Slave Output (SPI) |
 | 4 | `SD_SCK` | Serial Clock (SPI) |
+
 
 # License
 :page_facing_up: [MIT License](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/LICENSE)
