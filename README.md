@@ -26,7 +26,7 @@
 | 5 | `A0` | Data/Command switch |
 | 6 | `SDA` | Master Output Slave Input (SPI) |
 | 7 | `SCK` | Serial Clock (SPI) |
-| 8 | `LED` | Backlight |
+| 8 | `LED` | White backlight |
 
 ## SD
 | Pin | Name | Description |
