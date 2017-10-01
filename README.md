@@ -6,7 +6,7 @@
 * **Display size:** 1.8 inch
 * **Resolution:** 128(H) x 160(V) px
 * **Colors:** 262144
-* **Driver:** ST7735S
+* **Driver:** [ST7735S](https://github.com/michal037/driver-ST7735S/raw/master/datasheet/ST7735S_Datasheet_v1.1.pdf)
 * **Protocol:** [SPI](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus)
 * **Logic:** [CMOS](https://en.wikipedia.org/wiki/CMOS) and [TTL](https://en.wikipedia.org/wiki/Transistor%E2%80%93transistor_logic) compatible
 * **Technology:** [LCD](https://en.wikipedia.org/wiki/Liquid-crystal_display) [TFT](https://en.wikipedia.org/wiki/Thin-film_transistor)
