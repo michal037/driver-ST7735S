@@ -17,7 +17,7 @@
 
 
 # Pins
-## LCD
+## [LCD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
 | Pin | Name | Description |
 | :---: | :---: | --- |
 | 1 | `VCC` | Power supply |
@@ -29,7 +29,7 @@
 | 7 | `SCK` | Serial Clock (SPI) |
 | 8 | `LED` | White backlight |
 
-## SD
+## [SD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
 | Pin | Name | Description |
 | :---: | :---: | --- |
 | 1 | `SD_CS` | Chip select (SPI) |
