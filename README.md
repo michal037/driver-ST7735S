@@ -2,7 +2,7 @@
 [![ST7735S front](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small.png)](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front.png)
 
 
-# Parameters
+## Parameters
 * **Display size:** 1.8 inch
 * **Resolution:** 128(H) x 160(V) px
 * **Colours:** 262144
@@ -16,8 +16,8 @@
 * **Dimensions:** 58,0 x 34,5 mm
 
 
-# Pins
-## [LCD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
+## Pins
+### [LCD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
 | Pin | Name | Description |
 | :---: | :---: | --- |
 | 1 | `VCC` | Power Supply |
@@ -29,7 +29,7 @@
 | 7 | `SCK` | Serial Clock (SPI) |
 | 8 | `LED` | White Backlight |
 
-## [SD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
+### [SD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
 | Pin | Name | Description |
 | :---: | :---: | --- |
 | 1 | `SD_CS` | Chip Select (SPI) |
@@ -38,7 +38,7 @@
 | 4 | `SD_SCK` | Serial Clock (SPI) |
 
 
-# License
+## License
 [MIT License](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/LICENSE)
 
 Copyright (c) 2017 Michal Kozakiewicz, [github.com/michal037](https://github.com/michal037)
