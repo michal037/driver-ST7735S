@@ -11,7 +11,7 @@
 * **Logic:** [CMOS](https://en.wikipedia.org/wiki/CMOS) and [TTL](https://en.wikipedia.org/wiki/Transistor%E2%80%93transistor_logic) compatible
 * **Technology:** [LCD](https://en.wikipedia.org/wiki/Liquid-crystal_display) [TFT](https://en.wikipedia.org/wiki/Thin-film_transistor)
 * **Additional:** Built-in [SD](https://en.wikipedia.org/wiki/Secure_Digital) card slot
-* **Version:** 1.1
+* **Module version:** 1.1
 * **Operating temperature:** -30 to +85 &deg;C
 * **Dimensions:** 58,0 x 34,5 mm
 
