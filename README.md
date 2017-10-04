@@ -23,7 +23,7 @@
 | 1 | `VCC` | Power Supply |
 | 2 | `GND` | Power Ground |
 | 3 | `CS` | Chip Select (SPI) |
-| 4 | `RESET` | Reset Pin |
+| 4 | `RESET` | Reset |
 | 5 | `A0` | Data/Command Switch |
 | 6 | `SDA` | Serial Data Input/Output (SPI) |
 | 7 | `SCK` | Serial Clock (SPI) |
