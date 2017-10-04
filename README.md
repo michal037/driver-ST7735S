@@ -25,7 +25,7 @@
 | 3 | `CS` | Chip Select (SPI) |
 | 4 | `RESET` | Reset Pin |
 | 5 | `A0` | Data/Command Switch |
-| 6 | `SDA` | Master Output Slave Input (SPI) |
+| 6 | `SDA` | Serial Data Input/Output (SPI) |
 | 7 | `SCK` | Serial Clock (SPI) |
 | 8 | `LED` | White Backlight |
 
