@@ -38,6 +38,15 @@
 | 4 | `SD_SCK` | Serial Clock (SPI) |
 
 
+## For driver user
+> under construction
+
+
+## For driver developer
+If you want to write your own driver, you can use these tips.
+Go to file [programming-tips.md](programming-tips.md)
+
+
 ## License
 [MIT License](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/LICENSE)
 
