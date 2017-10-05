@@ -37,6 +37,8 @@
 | 3 | `SD_MISO` | Master Input Slave Output (SPI) |
 | 4 | `SD_SCK` | Serial Clock (SPI) |
 
+Each pin must work, otherwise it is damaged.
+
 
 ## For driver user
 > under construction
