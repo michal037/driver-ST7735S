@@ -46,7 +46,7 @@ Each pin must work, otherwise it is damaged.
 
 ## For driver developer
 If you want to write your own driver, you can use these tips.
-Go to file [developing-tips.md](developing-tips.md)
+Go to file [driver-developing-tips.md](driver-developing-tips.md)
 
 
 ## License
