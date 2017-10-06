@@ -8,7 +8,7 @@ In the documentation pin `A0` is `D/CX`, `SCK` is `SCL`, `CS` is `CSX` and `RESE
 `v1.3; p23-24`
 
 ## # 2
-The module is adapted to `4-lines serial interface` because it uses `SDA`, `SCK`, `CS` and `A0` pins. Driver pins which select the 4-lines interface are: `P68`, `IM2`, `IM1` and `IM0` are logic 0 - `GND` voltage; pin `SPI4W` is logic 1 - `VCC` voltage. Module works with standard `MODE_0` SPI and 8-bits word where MSB is shifted out as first.
+The module is adapted to `4-lines serial interface` because it uses `SDA`, `SCK`, `CS` and `A0` pins. Driver pins which select the 4-lines interface: `P68`, `IM2`, `IM1` and `IM0` are logic 0 - `GND` voltage; pin `SPI4W` is logic 1 - `VCC` voltage. Module works with standard `MODE_0` SPI and 8-bits word where MSB is shifted out as first.
 
 `v1.3; p23` `v1.3; p36` `v1.3; p44`
 
