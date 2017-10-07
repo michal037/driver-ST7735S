@@ -50,9 +50,9 @@ Go to file [driver-developing-tips.md](driver-developing-tips.md)
 
 
 ## License
-[MIT License](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/LICENSE)
+**[MIT License](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/LICENSE)**
 
-Copyright (c) 2017 Michal Kozakiewicz, [github.com/michal037](https://github.com/michal037)
+**Copyright (c) 2017 Michal Kozakiewicz, [github.com/michal037](https://github.com/michal037)**
 
 *Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:*
 
