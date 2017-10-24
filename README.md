@@ -8,7 +8,7 @@
 * **Colours:** 262144
 * **Driver:** [ST7735S](https://github.com/michal037/driver-ST7735S/raw/master/datasheet/ST7735S_Datasheet_v1.4.pdf)
 * **Protocol:** [SPI](https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus)
-* **Logic:** [CMOS](https://en.wikipedia.org/wiki/CMOS) and [TTL](https://en.wikipedia.org/wiki/Transistor%E2%80%93transistor_logic) compatible
+* **Logic:** [CMOS](https://en.wikipedia.org/wiki/CMOS) compatible
 * **Technology:** [LCD](https://en.wikipedia.org/wiki/Liquid-crystal_display) [TFT](https://en.wikipedia.org/wiki/Thin-film_transistor)
 * **Additional:** Built-in [SD](https://en.wikipedia.org/wiki/Secure_Digital) card slot
 * **Module version:** 1.1
