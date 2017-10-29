@@ -89,7 +89,7 @@ extern const struct st7735s st7735s;
 #define st7735s_InversionOff 0
 /* Gamma States */
 #define st7735s_Gamma1 1 /* 1.0 */
-#define st7735s_Gamma2 2 /* 2.5 */
+#define st7735s_Gamma2 2 /* 2.5 : preconfigured */
 #define st7735s_Gamma3 4 /* 2.2 */
 #define st7735s_Gamma4 8 /* 1.8 */
 /* Orientation States */
