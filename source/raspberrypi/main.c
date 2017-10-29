@@ -14,20 +14,18 @@ int main(int argc, char *argv[])
     /* Setup WiringPi */
     wiringPiSetup();
 
-    /* Create display, set as active */
+    /* Create display and set as active */
     st7735sType disp1 = st7735s.conf.createDisplay(15000000, 0, 5, -1);
 
-        while(1)
-        {
-            st7735s.draw.fillScreen(0, 0, 0);
-            st7735s.draw.fillScreen(255, 255, 255);
-            st7735s.draw.fillScreen(255, 0, 0);
-            st7735s.draw.fillScreen(0, 255, 0);
-            st7735s.draw.fillScreen(0, 0, 255);
-            st7735s.draw.fillScreen(255, 0, 255);
-            st7735s.draw.fillScreen(255, 255, 0);
-            st7735s.draw.fillScreen(0, 255, 255);
-        }
+    /* Draw 8 colours */
+    st7735s.draw.fillScreen(255, 0, 0); /* Red */
+    st7735s.draw.fillScreen(0, 255, 0); /* Green */
+    st7735s.draw.fillScreen(0, 0, 255); /* Blue */
+    st7735s.draw.fillScreen(255, 255, 0); /* Yellow */
+    st7735s.draw.fillScreen(0, 255, 255); /* Cyan */
+    st7735s.draw.fillScreen(255, 0, 255); /* Magenta */
+    st7735s.draw.fillScreen(255, 255, 255); /* White */
+    st7735s.draw.fillScreen(0, 0, 0); /* Black */
 
     /* Destroy active display */
     st7735s.conf.destroyActiveDisplay();
