@@ -15,9 +15,19 @@ int main(int argc, char *argv[])
     wiringPiSetup();
 
     /* Create display, set as active */
-    st7735sType disp1 = st7735s.conf.createDisplay(50000, 0, 5, 6);
+    st7735sType disp1 = st7735s.conf.createDisplay(15000000, 0, 5, -1);
 
-
+        while(1)
+        {
+            st7735s.draw.fillScreen(0, 0, 0);
+            st7735s.draw.fillScreen(255, 255, 255);
+            st7735s.draw.fillScreen(255, 0, 0);
+            st7735s.draw.fillScreen(0, 255, 0);
+            st7735s.draw.fillScreen(0, 0, 255);
+            st7735s.draw.fillScreen(255, 0, 255);
+            st7735s.draw.fillScreen(255, 255, 0);
+            st7735s.draw.fillScreen(0, 255, 255);
+        }
 
     /* Destroy active display */
     st7735s.conf.destroyActiveDisplay();
