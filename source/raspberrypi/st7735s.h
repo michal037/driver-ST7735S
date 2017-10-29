@@ -84,6 +84,18 @@ struct st7735s
 };
 extern const struct st7735s st7735s;
 
+/* Inversion States */
+#define st7735s_InversionOn 1
+#define st7735s_InversionOff 0
+/* Gamma States */
+#define st7735s_Gamma1 1 /* 1.0 */
+#define st7735s_Gamma2 2 /* 2.5 */
+#define st7735s_Gamma3 4 /* 2.2 */
+#define st7735s_Gamma4 8 /* 1.8 */
+/* Orientation States */
+#define st7735s_Orientation_Portrait 0
+#define st7735s_Orientation_Landscape 1
+
 #ifdef __cplusplus
 }
 #endif
