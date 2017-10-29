@@ -53,14 +53,16 @@ static void setGamma(uint8 state);
 static void setOrientation(uint8 state);
 static void setWindow(uint8 x1, uint8 y1, uint8 x2, uint8 y2);
 static void activeRAMWrite(void);
-// Drawing
-static void drawPx(uint8 x, uint8 y, uint8 red, uint8 green, uint8 blue);
+static uint8 getActiveDisplayWidth(void);
+static uint8 getActiveDisplayHeight(void);
+// Drawing functions for 18-bits colour
 static void pushColour(uint8 red, uint8 green, uint8 blue);
-static void drawFastVLine(uint8 x, uint8 y, uint8 height, uint8 red, uint8 green, uint8 blue);
+static void drawPx(uint8 x, uint8 y, uint8 red, uint8 green, uint8 blue);
 static void drawFastHLine(uint8 x, uint8 y, uint8 width, uint8 red, uint8 green, uint8 blue);
+static void drawFastVLine(uint8 x, uint8 y, uint8 height, uint8 red, uint8 green, uint8 blue);
+static void drawRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
 static void fillRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
 static void fillScreen(uint8 red, uint8 green, uint8 blue);
-static void drawRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
 
 /* Public st7735s functions */
 const struct st7735s st7735s = /* DEFINITION */
@@ -76,19 +78,20 @@ const struct st7735s st7735s = /* DEFINITION */
         setGamma,
         setOrientation,
         setWindow,
-        activeRAMWrite
+        activeRAMWrite,
+        getActiveDisplayWidth,
+        getActiveDisplayHeight
     },
     { /* Drawing Functions */
-        drawPx,
         pushColour,
-        drawFastVLine,
+        drawPx,
         drawFastHLine,
+        drawFastVLine,
+        drawRect,
         fillRect,
-        fillScreen,
-        drawRect
+        fillScreen
     }
 };
-
 
 /************************ PRIVATE FUNCTIONS ************************/
 /*
@@ -124,7 +127,8 @@ int is_big_endian(void)
 } /* is_big_endian */
 
 /*
- * Safe Free
+ * safeFree()
+ *
  * Use with macro:
  *   #define safeFree(p) __safeFree((void**)&(p))
  */
@@ -139,7 +143,7 @@ static inline void __safeFree(void **pp)
 } /* __safeFree */
 
 /*
- * Safe Malloc()
+ * safe_Malloc()
  *
  * Parameters:
  *   INPUT: size - size of memory to allocate
@@ -212,17 +216,18 @@ static st7735sType createDisplay(int SPISpeed, int cs, int a0, int rs)
     result->cs = cs;
     result->a0 = a0;
     result->rs = rs;
-    result->width = 128;
-    result->height = 160;
+    result->width = 128; /* Default */
+    result->height = 160; /* Default */
 
     /* Setup SPI interface */
     if(gpio.SPISetup(result->cs, SPISpeed) == -1)
     {
+        /* If error, close program. */
         fprintf(stderr, "Failed to setup Hardware SPI!\n");
         exit(EXIT_FAILURE);
     }
 
-    /* Reset pin as OUTPUT; disable = HIGH */
+    /* Reset pin as OUTPUT; disable -> 'HIGH' */
     if(result->rs != -1)
     { /* If reset pin is not connected */
         gpio.pinMode(result->rs, OUTPUT);
@@ -275,7 +280,7 @@ static void HWReset(st7735sType display)
 {
     st7735sTypeRaw *disp = display;
 
-    /* If reset pin is not connected: return */
+    /* If reset pin is not connected: exit function */
     if(disp->rs == -1) return;
 
     gpio.digitalWrite(disp->rs, HIGH); /* Disable reset */
@@ -287,7 +292,7 @@ static void HWReset(st7735sType display)
 
 static void setInversion(uint8 state)
 {
-    /* Display Inversion On   / Off */
+    /* Display Inversion On / Off */
     writeCommand(state ? 0x21 : 0x20);
 } /* setInversion */
 
@@ -296,11 +301,11 @@ static void setGamma(uint8 state)
     switch(state)
     { /* [GS_Pin = 0] Checked on hardware! */
         default: state = 1; break; /* GS_Pin=1: 2.2; GS_Pin=0: 1.0 */
-        case 2: break; /* GS_Pin=1: 1.8; GS_Pin=0: 2.5 */
-        case 4: break; /* GS_Pin=1: 2.5; GS_Pin=0: 2.2 */
-        case 8: break; /* GS_Pin=1: 1.0; GS_Pin=0: 1.8 */
+        case 2: break;             /* GS_Pin=1: 1.8; GS_Pin=0: 2.5 */
+        case 4: break;             /* GS_Pin=1: 2.5; GS_Pin=0: 2.2 */
+        case 8: break;             /* GS_Pin=1: 1.0; GS_Pin=0: 1.8 */
     }
-    writeCommand(0x26); /* Gamma Set */
+    writeCommand(0x26); /* Builtin Gamma Set */
     writeData(state);
 } /* setGamma */
 
@@ -337,7 +342,22 @@ static void activeRAMWrite(void)
     gpio.digitalWrite(((st7735sTypeRaw*)ActiveDisplay)->a0, HIGH);
 } /* activeRAMWrite */
 
+static uint8 getActiveDisplayWidth(void)
+{
+    return ((st7735sTypeRaw*)ActiveDisplay)->width;
+} /* getActiveDisplayWidth */
+
+static uint8 getActiveDisplayHeight(void)
+{
+    return ((st7735sTypeRaw*)ActiveDisplay)->height;
+} /* getActiveDisplayHeight */
+
 //////////////////////////////////////////////////
+
+static void pushColour(uint8 red, uint8 green, uint8 blue)
+{
+    SPIWrite(red); SPIWrite(green); SPIWrite(blue);
+} /* pushColour */
 
 static void drawPx(uint8 x, uint8 y, uint8 red, uint8 green, uint8 blue)
 {
@@ -345,15 +365,32 @@ static void drawPx(uint8 x, uint8 y, uint8 red, uint8 green, uint8 blue)
     if((x >= ((st7735sTypeRaw*)ActiveDisplay)->width) ||
        (y >= ((st7735sTypeRaw*)ActiveDisplay)->height)) return;
 
+    /* Setup window, active ram writing and send colour */
     setWindow(x, y, x, y);
     activeRAMWrite();
     SPIWrite(red); SPIWrite(green); SPIWrite(blue);
 } /* drawPx */
 
-static void pushColour(uint8 red, uint8 green, uint8 blue)
+static void drawFastHLine(uint8 x, uint8 y, uint8 width, uint8 red, uint8 green,
+                          uint8 blue)
 {
-    SPIWrite(red); SPIWrite(green); SPIWrite(blue);
-} /* pushColour */
+    /* Check x and y */
+    if((x >= ((st7735sTypeRaw*)ActiveDisplay)->width) ||
+       (y >= ((st7735sTypeRaw*)ActiveDisplay)->height)) return;
+
+    /* Check width */
+    if((x+width-1) >= ((st7735sTypeRaw*)ActiveDisplay)->width)
+    {
+        width = ((st7735sTypeRaw*)ActiveDisplay)->width - x;
+    }
+
+    setWindow(x, y, x+width-1, y);
+    activeRAMWrite();
+    while(width--)
+    {
+        SPIWrite(red); SPIWrite(green); SPIWrite(blue);
+    }
+} /* drawFastHLine */
 
 static void drawFastVLine(uint8 x, uint8 y, uint8 height, uint8 red,
                           uint8 green, uint8 blue)
@@ -376,26 +413,14 @@ static void drawFastVLine(uint8 x, uint8 y, uint8 height, uint8 red,
     }
 } /* drawFastVLine */
 
-static void drawFastHLine(uint8 x, uint8 y, uint8 width, uint8 red, uint8 green,
-                          uint8 blue)
+static void drawRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red,
+                     uint8 green, uint8 blue)
 {
-    /* Check x and y */
-    if((x >= ((st7735sTypeRaw*)ActiveDisplay)->width) ||
-       (y >= ((st7735sTypeRaw*)ActiveDisplay)->height)) return;
-
-    /* Check width */
-    if((x+width-1) >= ((st7735sTypeRaw*)ActiveDisplay)->width)
-    {
-        width = ((st7735sTypeRaw*)ActiveDisplay)->width - x;
-    }
-
-    setWindow(x, y, x+width-1, y);
-    activeRAMWrite();
-    while(width--)
-    {
-        SPIWrite(red); SPIWrite(green); SPIWrite(blue);
-    }
-} /* drawFastHLine */
+        drawFastHLine(x, y, width, red, green, blue);
+        drawFastHLine(x, y+height-1, width, red, green, blue);
+        drawFastVLine(x, y, height, red, green, blue);
+        drawFastVLine(x+width-1, y, height, red, green, blue);
+} /* drawRect */
 
 static void fillRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red,
                      uint8 green, uint8 blue)
@@ -428,13 +453,4 @@ static void fillScreen(uint8 red, uint8 green, uint8 blue)
     fillRect(0, 0, ((st7735sTypeRaw*)ActiveDisplay)->width,
              ((st7735sTypeRaw*)ActiveDisplay)->height, red, green, blue);
 } /* fillScreen */
-
-static void drawRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red,
-                     uint8 green, uint8 blue)
-{
-        drawFastHLine(x, y, width, red, green, blue);
-        drawFastHLine(x, y+height-1, width, red, green, blue);
-        drawFastVLine(x, y, height, red, green, blue);
-        drawFastVLine(x+width-1, y, height, red, green, blue);
-} /* drawRect */
 /******************** END PUBLIC FUNCTIONS END ********************/
