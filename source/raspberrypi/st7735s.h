@@ -8,7 +8,6 @@
 
 #ifndef LIB_ST7735S_H
 #define LIB_ST7735S_H
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -69,16 +68,18 @@ struct st7735s
         void (* const setOrientation)(uint8 state);
         void (* const setWindow)(uint8 x1, uint8 y1, uint8 x2, uint8 y2);
         void (* const activeRAMWrite)(void);
+        uint8 (* const getActiveDisplayWidth)(void);
+        uint8 (* const getActiveDisplayHeight)(void);
     } conf;
     struct /* Drawing Functions for 18-bits colour */
     {
-        void (* const drawPx)(uint8 x, uint8 y, uint8 red, uint8 green, uint8 blue);
         void (* const pushColour)(uint8 red, uint8 green, uint8 blue);
-        void (* const drawFastVLine)(uint8 x, uint8 y, uint8 height, uint8 red, uint8 green, uint8 blue);
+        void (* const drawPx)(uint8 x, uint8 y, uint8 red, uint8 green, uint8 blue);
         void (* const drawFastHLine)(uint8 x, uint8 y, uint8 width, uint8 red, uint8 green, uint8 blue);
+        void (* const drawFastVLine)(uint8 x, uint8 y, uint8 height, uint8 red, uint8 green, uint8 blue);
+        void (* const drawRect)(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
         void (* const fillRect)(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
         void (* const fillScreen)(uint8 red, uint8 green, uint8 blue);
-        void (* const drawRect)(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
     } draw;
 };
 extern const struct st7735s st7735s;
@@ -86,5 +87,4 @@ extern const struct st7735s st7735s;
 #ifdef __cplusplus
 }
 #endif
-
 #endif /* LIB_ST7735S_H */
