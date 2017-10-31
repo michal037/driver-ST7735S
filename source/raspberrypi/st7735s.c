@@ -12,12 +12,12 @@
 #include <wiringPi.h> /* Can be changed */
 #include <wiringPiSPI.h> /* Can be changed */
 struct /* Function pointers structure */
-{ /* DO NOT TOUCH! */
-    void (* const pinMode)(int pin, int mode);
-    void (* const digitalWrite)(int pin, int value);
-    void (* const delay)(unsigned int howLong);
-    int (* const SPISetup)(int channel, int speed);
-    int (* const SPIDataRW)(int channel, uint8 *data, int len);
+{
+    void (* const pinMode)(int pin, int mode); /* DO NOT TOUCH! */
+    void (* const digitalWrite)(int pin, int value); /* DO NOT TOUCH! */
+    void (* const delay)(unsigned int howLong); /* DO NOT TOUCH! */
+    int (* const SPISetup)(int channel, int speed); /* DO NOT TOUCH! */
+    int (* const SPIDataRW)(int channel, uint8 *data, int len); /* DO NOT TOUCH! */
 } static const gpio = /* DEFINITION */
 { /* Function pointers can be changed */
     pinMode,
@@ -34,8 +34,8 @@ typedef struct
     int cs; /* Chip select line */
     int a0; /* Data/Command line */
     int rs; /* Reset line */
-    uint8 width;
-    uint8 height;
+    uint8 width; /* Currently used width */
+    uint8 height; /* Currently used height */
 } st7735sTypeRaw;
 
 static st7735sType ActiveDisplay; /* FILE GLOBAL: Current active display */
@@ -55,14 +55,25 @@ static void setWindow(uint8 x1, uint8 y1, uint8 x2, uint8 y2);
 static void activeRAMWrite(void);
 static uint8 getActiveDisplayWidth(void);
 static uint8 getActiveDisplayHeight(void);
-// Drawing functions for 18-bits colour
-static void pushColour(uint8 red, uint8 green, uint8 blue);
-static void drawPx(uint8 x, uint8 y, uint8 red, uint8 green, uint8 blue);
-static void drawFastHLine(uint8 x, uint8 y, uint8 width, uint8 red, uint8 green, uint8 blue);
-static void drawFastVLine(uint8 x, uint8 y, uint8 height, uint8 red, uint8 green, uint8 blue);
-static void drawRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
-static void fillRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
-static void fillScreen(uint8 red, uint8 green, uint8 blue);
+#if CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelFull /* DO NOT TOUCH THIS LINE! */
+    // Drawing functions for 18-bits colour
+    static void pushColour(uint8 red, uint8 green, uint8 blue);
+    static void drawPx(uint8 x, uint8 y, uint8 red, uint8 green, uint8 blue);
+    static void drawFastHLine(uint8 x, uint8 y, uint8 width, uint8 red, uint8 green, uint8 blue);
+    static void drawFastVLine(uint8 x, uint8 y, uint8 height, uint8 red, uint8 green, uint8 blue);
+    static void drawRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
+    static void fillRect(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
+    static void fillScreen(uint8 red, uint8 green, uint8 blue);
+#elif CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelReduced /* DO NOT TOUCH THIS LINE! */
+    // Drawing functions for 12-bits colour
+    static void pushColour(st7735s_Colour12b stPx, st7735s_Colour12b_2 ndPx);
+    static void drawPx(uint8 x, uint8 y, st7735s_Colour12b stPx);
+    static void drawFastHLine(uint8 x, uint8 y, uint8 width, st7735s_Colour12b stPx);
+    static void drawFastVLine(uint8 x, uint8 y, uint8 height, st7735s_Colour12b stPx);
+    static void drawRect(uint8 x, uint8 y, uint8 width, uint8 height, st7735s_Colour12b stPx);
+    static void fillRect(uint8 x, uint8 y, uint8 width, uint8 height, st7735s_Colour12b stPx);
+    static void fillScreen(st7735s_Colour12b stPx);
+#endif
 
 /* Public st7735s functions */
 const struct st7735s st7735s = /* DEFINITION */
@@ -125,22 +136,6 @@ int is_big_endian(void)
 
     return e.c[0]; /* Output: [1:Big], [0:Little] Endian */
 } /* is_big_endian */
-
-/*
- * safeFree()
- *
- * Use with macro:
- *   #define safeFree(p) __safeFree((void**)&(p))
- */
-#define safeFree(p) __safeFree((void**)&(p))
-static inline void __safeFree(void **pp)
-{
-    if(pp != NULL && *pp != NULL)
-    {
-        free(*pp);
-        *pp = NULL;
-    }
-} /* __safeFree */
 
 /*
  * safe_Malloc()
@@ -229,7 +224,7 @@ static st7735sType createDisplay(int SPISpeed, int cs, int a0, int rs)
 
     /* Reset pin as OUTPUT; disable -> 'HIGH' */
     if(result->rs != -1)
-    { /* If reset pin is not connected */
+    { /* If reset pin is connected */
         gpio.pinMode(result->rs, OUTPUT);
         gpio.digitalWrite(result->rs, HIGH);
         /* Hardware restart before initialize display */
@@ -249,6 +244,13 @@ static st7735sType createDisplay(int SPISpeed, int cs, int a0, int rs)
     setOrientation(0); /* [Default:0] Must be refreshed! */
     /* Because the software reset does not refresh it.
      * See the 'Reset Table' in the documentation for this. */
+    #if CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelReduced /* DO NOT TOUCH THIS LINE! */
+        writeCommand(0x3A); /* Choose the pixel format; Send 12-bits per Pixel */
+        writeData(0x03);
+    #elif CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelFull /* DO NOT TOUCH THIS LINE! */
+        writeCommand(0x3A); /* Choose the pixel format; Send 18-bits per Pixel */
+        writeData(0x06); /* Default */
+    #endif
     writeCommand(0x29); /* Display On */
     gpio.delay(100); /* 100ms before start */
 
@@ -354,6 +356,8 @@ static uint8 getActiveDisplayHeight(void)
 
 //////////////////////////////////////////////////
 
+#if CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelFull /* DO NOT TOUCH THIS LINE! */
+
 static void pushColour(uint8 red, uint8 green, uint8 blue)
 {
     SPIWrite(red); SPIWrite(green); SPIWrite(blue);
@@ -453,4 +457,125 @@ static void fillScreen(uint8 red, uint8 green, uint8 blue)
     fillRect(0, 0, ((st7735sTypeRaw*)ActiveDisplay)->width,
              ((st7735sTypeRaw*)ActiveDisplay)->height, red, green, blue);
 } /* fillScreen */
+
+#elif CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelReduced /* DO NOT TOUCH THIS LINE! */
+
+static void pushColour(st7735s_Colour12b stPx, st7735s_Colour12b_2 ndPx)
+{
+    SPIWrite(stPx.stPx[0]); SPIWrite(stPx.stPx[1]); SPIWrite(ndPx.ndPx);
+} /* pushColour */
+
+static void drawPx(uint8 x, uint8 y, st7735s_Colour12b stPx)
+{
+    /* Check x and y */
+    if((x >= ((st7735sTypeRaw*)ActiveDisplay)->width) ||
+       (y >= ((st7735sTypeRaw*)ActiveDisplay)->height)) return;
+
+    /* Setup window, active ram writing and send colour */
+    setWindow(x, y, x, y);
+    activeRAMWrite();
+    SPIWrite(stPx.stPx[0]); SPIWrite(stPx.stPx[1]);
+} /* drawPx */
+
+static void drawFastHLine(uint8 x, uint8 y, uint8 width, st7735s_Colour12b stPx)
+{
+    st7735s_Colour12b_2 ndPx;
+
+    /* Check x and y */
+    if((x >= ((st7735sTypeRaw*)ActiveDisplay)->width) ||
+       (y >= ((st7735sTypeRaw*)ActiveDisplay)->height)) return;
+
+    /* Check width */
+    if((x+width-1) >= ((st7735sTypeRaw*)ActiveDisplay)->width)
+    {
+        width = ((st7735sTypeRaw*)ActiveDisplay)->width - x;
+    }
+
+    /* Complement the pixels */
+    stPx.rgbr2.r2 = stPx.rgbr2.r;
+    ndPx.g2b2.g2 =  stPx.rgbr2.g;
+    ndPx.g2b2.b2 =  stPx.rgbr2.b;
+
+    setWindow(x, y, x+width-1, y);
+    activeRAMWrite();
+    while(width--)
+    {
+        SPIWrite(stPx.stPx[0]); SPIWrite(stPx.stPx[1]); SPIWrite(ndPx.ndPx);
+    }
+} /* drawFastHLine */
+
+static void drawFastVLine(uint8 x, uint8 y, uint8 height, st7735s_Colour12b stPx)
+{
+    st7735s_Colour12b_2 ndPx;
+
+    /* Check x and y */
+    if((x >= ((st7735sTypeRaw*)ActiveDisplay)->width) ||
+       (y >= ((st7735sTypeRaw*)ActiveDisplay)->height)) return;
+
+    /* Check height */
+    if((y+height-1) >= ((st7735sTypeRaw*)ActiveDisplay)->height)
+    {
+        height = ((st7735sTypeRaw*)ActiveDisplay)->height - y;
+    }
+
+    /* Complement the pixels */
+    stPx.rgbr2.r2 = stPx.rgbr2.r;
+    ndPx.g2b2.g2 =  stPx.rgbr2.g;
+    ndPx.g2b2.b2 =  stPx.rgbr2.b;
+
+    setWindow(x, y, x, y+height-1);
+    activeRAMWrite();
+    while(height--)
+    {
+        SPIWrite(stPx.stPx[0]); SPIWrite(stPx.stPx[1]); SPIWrite(ndPx.ndPx);
+    }
+} /* drawFastVLine */
+
+static void drawRect(uint8 x, uint8 y, uint8 width, uint8 height, st7735s_Colour12b stPx)
+{
+        drawFastHLine(x, y, width, stPx);
+        drawFastHLine(x, y+height-1, width, stPx);
+        drawFastVLine(x, y, height, stPx);
+        drawFastVLine(x+width-1, y, height, stPx);
+} /* drawRect */
+
+static void fillRect(uint8 x, uint8 y, uint8 width, uint8 height, st7735s_Colour12b stPx)
+{
+    st7735s_Colour12b_2 ndPx;
+
+    /* Check x and y */
+    if((x >= ((st7735sTypeRaw*)ActiveDisplay)->width) ||
+       (y >= ((st7735sTypeRaw*)ActiveDisplay)->height)) return;
+
+    /* Check height */
+    if((y+height-1) >= ((st7735sTypeRaw*)ActiveDisplay)->height)
+    {
+        height = ((st7735sTypeRaw*)ActiveDisplay)->height - y;
+    }
+    /* Check width */
+    if((x+width-1) >= ((st7735sTypeRaw*)ActiveDisplay)->width)
+    {
+        width = ((st7735sTypeRaw*)ActiveDisplay)->width - x;
+    }
+
+    /* Complement the pixels */
+    stPx.rgbr2.r2 = stPx.rgbr2.r;
+    ndPx.g2b2.g2 =  stPx.rgbr2.g;
+    ndPx.g2b2.b2 =  stPx.rgbr2.b;
+
+    setWindow(x, y, x+width-1, y+height-1);
+    activeRAMWrite();
+    while(height--) while(width--)
+    {
+        SPIWrite(stPx.stPx[0]); SPIWrite(stPx.stPx[1]); SPIWrite(ndPx.ndPx);
+    }
+} /* drawFillRect */
+
+static void fillScreen(st7735s_Colour12b stPx)
+{
+    fillRect(0, 0, ((st7735sTypeRaw*)ActiveDisplay)->width,
+             ((st7735sTypeRaw*)ActiveDisplay)->height, stPx);
+} /* fillScreen */
+
+#endif
 /******************** END PUBLIC FUNCTIONS END ********************/
