@@ -4,7 +4,7 @@
 #
 
 # Can be edit
-OUTNAME=st7735s_app
+OUTNAME=st7735s_testapp
 EXAMPLE=main.c
 
 # Do not edit
