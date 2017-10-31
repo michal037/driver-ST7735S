@@ -41,7 +41,7 @@ Each pin **must work**, otherwise it is *damaged*.
 
 
 ## For driver user
-> under construction
+> under construction | documentation in the near future
 
 
 ## For driver developer
