@@ -41,7 +41,8 @@ Each pin **must work**, otherwise it is *damaged*.
 
 
 ## For driver user
-> under construction | documentation in the near future
+If you want **to use this library.**
+Go to [Application Programming Interface](documentation/readme.md).
 
 
 ## For driver developer
