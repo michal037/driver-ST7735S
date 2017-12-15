@@ -1,8 +1,8 @@
-# [Sitronix](http://www.sitronix.com.tw/en/index.html) [ST7735S](http://www.sitronix.com.tw/en/product/Driver/mobile_display.html) display module
+# *[Sitronix](http://www.sitronix.com.tw/en/index.html) [ST7735S](http://www.sitronix.com.tw/en/product/Driver/mobile_display.html) display module*
 [![ST7735S front](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small.png)](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front.jpg)
 
 
-## Parameters
+## *Parameters*
 * **Display size:** 1.8 inch
 * **Resolution:** 128(H) x 160(V) px
 * **Colours:** 262144
@@ -16,7 +16,7 @@
 * **Dimensions:** 58,0 x 34,5 mm
 
 
-## Pins
+## *Pins*
 ### [LCD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
 | Pin | Name | Description |
 | :---: | :---: | --- |
@@ -29,7 +29,7 @@
 | 7 | *SCK* | Serial Clock [SPI] |
 | 8 | *LED* | White Backlight |
 
-### [SD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)
+### *[SD](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/photos/front_small_pins.png)*
 | Pin | Name | Description |
 | :---: | :---: | --- |
 | 1 | *SD_CS* | Chip Select [SPI] |
@@ -40,20 +40,20 @@
 Each pin **must work**, otherwise it is *damaged*.
 
 
-## For driver user
+## *For driver user*
 If you want **to use this library.**
 Go to [Application Programming Interface](documentation/readme.md).
 
 
-## For driver developer
+## *For driver developer*
 If you want to write your **own driver**, you can use these tips.
 Go to file [driver-developing-tips.md](driver-developing-tips.md)
 
 
-## License
+## *License*
 **[MIT License](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/LICENSE)**
 
-**Copyright (c) 2017 Michal Kozakiewicz, [github.com/michal037](https://github.com/michal037)**
+**Copyright (c) from 2017, Michal Kozakiewicz, [github.com/michal037](https://github.com/michal037)**
 
 *Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:*
 
