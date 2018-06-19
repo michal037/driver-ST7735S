@@ -1,3 +1,5 @@
+I intend to update the code and documentation in the very near future.
+
 # [Sitronix ST7735S](http://www.sitronix.com.tw/en/product/Driver/mobile_display.html)
 [![ST7735S png](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/documentation/img/st7735s-small.png)](https://raw.githubusercontent.com/michal037/driver-ST7735S/master/documentation/img/st7735s-full.png)
 
