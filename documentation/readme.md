@@ -1,7 +1,7 @@
 # Documentation
 
 ## Datasheet
-[download](https://github.com/michal037/driver-ST7735S/raw/master/documentation/datasheet/st7735s_datasheet_v1.4.pdf)
+[Download](https://github.com/michal037/driver-ST7735S/raw/master/documentation/datasheet/st7735s_datasheet_v1.4.pdf)
 
 ## Application Programming Interface
 
