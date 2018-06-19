@@ -1,6 +1,9 @@
-# Application Programming Interface
+# Documentation
 
-## Core API
+## Datasheet
+[download](https://github.com/michal037/driver-ST7735S/raw/master/documentation/datasheet/st7735s_datasheet_v1.4.pdf)
+
+## Application Programming Interface
 
 * [Introduction](core/introduction.md)
 * [Getting started guide](getting-started-guide.md)

@@ -26,8 +26,8 @@
 Each pin must work. Otherwise, it is broken.
 
 
-## Application Programming Interface
-Go to [Application Programming Interface](documentation/readme.md)
+## Documentation
+Go to [Documentation](documentation/readme.md)
 
 
 ## License
