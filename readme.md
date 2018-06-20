@@ -25,8 +25,6 @@ I intend to update the code and documentation in the very near future.
 | 7 | SCK | [SPI] Serial Clock |
 | 8 | LED | Backlight |
 
-Each pin must work. Otherwise, it is broken.
-
 
 ## Documentation
 Go to [Documentation](documentation/readme.md)
