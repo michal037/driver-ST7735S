@@ -10,8 +10,9 @@ I intend to update the code and documentation in the very near future.
 * **Colors:** 262144
 * **Driver:** [ST7735S](documentation/datasheet/st7735s_datasheet_v1.4.pdf)
 * **Protocol:** SPI
-* **Logic:** CMOS compatible
+* **Logic:** 3,3V
 
+Some display modules have a built-in 3,3V voltage regulator on VCC line. Be careful with the rest of lines.
 
 ## Pins
 | Pin | Name | Description |
