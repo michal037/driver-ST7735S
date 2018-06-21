@@ -12,7 +12,8 @@ I intend to update the code and documentation in the very near future.
 * **Protocol:** SPI
 * **Logic:** 3,3V
 
-Some display modules have a built-in 3,3V voltage regulator on VCC line. Be careful with the rest of lines.
+Some display modules have a built-in 3,3V voltage regulator on VCC line.
+Be careful with the rest of lines.
 
 ## Pins
 | Pin | Name | Description |
