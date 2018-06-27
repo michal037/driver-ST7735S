@@ -27,7 +27,7 @@ Be careful with the rest of lines.
 ## Documentation
 Go to [Documentation](documentation/readme.md)
 
-# Reporting issues
+## Reporting issues
 Please feel free to report issues.
 
 ## License
