@@ -1,145 +1,303 @@
 /*
  * MIT License
- * Copyright (c) from 2017, Michal Kozakiewicz, github.com/michal037
+ * Copyright (c) 2018, Michal Kozakiewicz, github.com/michal037
  *
- * ST7735S driver
- * https://github.com/michal037/driver-ST7735S
+ * Version: rpi-v1.1
+ * Standard: GCC-C11
  */
 
-#ifndef LIB_ST7735S_H
-#define LIB_ST7735S_H
+#ifndef _LIBRARY_ST7735S_
+#define _LIBRARY_ST7735S_
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-//////////////////// IMPORTANT CONFIGURATION
-#ifndef TRUE
-#define TRUE 1
-#endif
-#ifndef FALSE
-#define FALSE 0
-#endif
-#define st7735s_PixelFull 18 /* DO NOT TOUCH THIS LINE! */
-#define st7735s_PixelReduced 12 /* DO NOT TOUCH THIS LINE! */
+/* Pixel sizes */
+#define ST7735S_PIXEL_FULL 1
+#define ST7735S_PIXEL_REDUCED 0
 
-//////////////////// SETUP 1
-    #define CHOOSE_THE_PIXEL_FORMAT st7735s_PixelFull /* Change here! -> st7735s_PixelFull or st7735s_PixelReduced */
+/*
+ * This setting determines the number of bits per pixel.
+ * Choose the above pixel size, enter it in the configuration.
+ * Without change, default value are selected.
+ ******************************** CONFIGURATION *******************************/
+#define ST7735S_CFG_PIXEL ST7735S_PIXEL_FULL
+/**************************** END CONFIGURATION END ***************************/
 
-//////////////////// SETUP 2
-#if CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelReduced /* DO NOT TOUCH THIS LINE! */
-#warning Please answer the question! 'IS_SYSTEM_LITTLE_ENDIAN' -> TRUE/FALSE
-    #define IS_SYSTEM_LITTLE_ENDIAN TRUE /* Change here! -> TRUE or FALSE */
-#endif
-/* If you do not know, use is_big_endian() from st7735s.c */
-/* TESTED BELOW
- *
- * Raspberry Pi Zero (Not W) v.1.3 is Little-Endian;
- */
-//////////////////// ENF OF IMPORTANT CONFIGURATION
-
+/* Type simplification; The 8-bit unsigned integer */
 #ifndef uint8
 #define uint8 unsigned char
 #endif
-
-#if CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelReduced /* DO NOT TOUCH THIS LINE! */
-/* Structure for 12-bits colour; Size of one copy is 2-Bytes */
-typedef union
+ 
+/* The data type for one display */
+typedef struct
 {
-    #if IS_SYSTEM_LITTLE_ENDIAN == TRUE /* DO NOT TOUCH THIS LINE! */
-        #warning You have chosen that system is Little-Endian!
-        struct {uint8 g:4, r:4, r2:4, b:4;} rgbr2; /* Little-Endian System */
-    #elif IS_SYSTEM_LITTLE_ENDIAN == FALSE /* DO NOT TOUCH THIS LINE! */
-        #warning You have chosen that system is Big-Endian!
-        struct {uint8 r:4, g:4, b:4, r2:4;} rgbr2; /* Big-Endian System */
-    #else
-        #error YOU NEED TO SET THE ANSWER FOR 'IS_SYSTEM_LITTLE_ENDIAN'!
-    #endif
-    uint8 stPx[2];
-} st7735s_Colour12b;
+	int cs, a0, rs;
+	uint8 width, height;
+} lcdst_t;
 
-/* Structure for 12-bits colour; Size of one copy is 1-Byte */
-typedef union
-{
-    #if IS_SYSTEM_LITTLE_ENDIAN == TRUE /* DO NOT TOUCH THIS LINE! */
-        struct {uint8 b2:4, g2:4;} g2b2; /* Little-Endian System */
-    #elif IS_SYSTEM_LITTLE_ENDIAN == FALSE /* DO NOT TOUCH THIS LINE! */
-        struct {uint8 g2:4, b2:4;} g2b2; /* Big-Endian System */
-    #endif
-    uint8 ndPx;
-} st7735s_Colour12b_2;
-#endif
+/*
+ * Initialize the display and create a data structure for it.
+ *
+ * Parameters:
+ *   spiSpeed - Speed of the SPI interface.
+ *   cs - Chip selection pin.
+ *   a0 - Data/Command pin.
+ *   rs - Optional reset pin. If you do not use it, enter -1.
+ *
+ * Return: Pointer to the structure with display data.
+ *
+ */
+lcdst_t *lcdst_init(int spiSpeed, int cs, int a0, int rs);
 
-/* st7735s Display Type; Hidden from the user */
-typedef void * st7735sType;
+/*
+ * Reset the specified display and clear the previously assigned memory.
+ *
+ * Parameters:
+ *   display - Pointer to the structure with display data.
+ *
+ * Return: void
+ */
+void lcdst_uninit(lcdst_t *display);
 
-/* st7735s Public Functions */
-struct st7735s
-{
-    struct /* Configuration Functions */
-    {
-        st7735sType (* const createDisplay)(int SPISpeed, int cs, int a0, int rs);
-        void (* const destroyDisplay)(st7735sType display);
-        void (* const destroyActiveDisplay)(void);
-        void (* const setActiveDisplay)(st7735sType display);
-        st7735sType (* const getActiveDisplay)(void);
-        void (* const HWReset)(st7735sType display);
-        void (* const setInversion)(uint8 state);
-        void (* const setGamma)(uint8 state);
-        void (* const setOrientation)(uint8 state);
-        void (* const setWindow)(uint8 x1, uint8 y1, uint8 x2, uint8 y2);
-        void (* const activeRAMWrite)(void);
-        uint8 (* const getActiveDisplayWidth)(void);
-        uint8 (* const getActiveDisplayHeight)(void);
-    } conf;
-    #if CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelFull /* DO NOT TOUCH THIS LINE! */
-        struct /* Drawing Functions for 18-bits colour */
-        {
-            void (* const pushColour)(uint8 red, uint8 green, uint8 blue);
-            void (* const drawPx)(uint8 x, uint8 y, uint8 red, uint8 green, uint8 blue);
-            void (* const drawFastHLine)(uint8 x, uint8 y, uint8 width, uint8 red, uint8 green, uint8 blue);
-            void (* const drawFastVLine)(uint8 x, uint8 y, uint8 height, uint8 red, uint8 green, uint8 blue);
-            void (* const drawRect)(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
-            void (* const fillRect)(uint8 x, uint8 y, uint8 width, uint8 height, uint8 red, uint8 green, uint8 blue);
-            void (* const fillScreen)(uint8 red, uint8 green, uint8 blue);
-        } draw;
-    #elif CHOOSE_THE_PIXEL_FORMAT == st7735s_PixelReduced /* DO NOT TOUCH THIS LINE! */
-        struct /* Drawing Functions for 12-bits colour */
-        {
-            void (* const pushColour)(st7735s_Colour12b stPx, st7735s_Colour12b_2 ndPx);
-            void (* const drawPx)(uint8 x, uint8 y, st7735s_Colour12b stPx);
-            void (* const drawFastHLine)(uint8 x, uint8 y, uint8 width, st7735s_Colour12b stPx);
-            void (* const drawFastVLine)(uint8 x, uint8 y, uint8 height, st7735s_Colour12b stPx);
-            void (* const drawRect)(uint8 x, uint8 y, uint8 width, uint8 height, st7735s_Colour12b stPx);
-            void (* const fillRect)(uint8 x, uint8 y, uint8 width, uint8 height, st7735s_Colour12b stPx);
-            void (* const fillScreen)(st7735s_Colour12b stPx);
-        } draw;
-    #else
-    #warning YOU NEED TO SET THE ANSWER FOR 'CHOOSE_THE_PIXEL_FORMAT' -> st7735s_PixelFull OR st7735s_PixelReduced
-    #endif
-};
-extern const struct st7735s st7735s;
+/*
+ * Perform a hardware reset on a specified display.
+ *
+ * Parameters:
+ *   display - Pointer to the structure with display data.
+ *
+ * Return: void
+ */
+void lcdst_hardwareReset(lcdst_t *display);
 
-/* Predefined colours for 12-bits pixel */
-#define st7735s_COLOR_WHITE ((st7735s_Colour12b){{15,15,15,15}})
-#define st7735s_COLOR_BLACK ((st7735s_Colour12b){{0,0,0,0}})
-#define st7735s_COLOR_WHITE_NDPX ((st7735s_Colour12b){{15,15}})
-#define st7735s_COLOR_BLACK_NDPX ((st7735s_Colour12b){{0,0}})
+/*
+ * Set the pointer to structure with the display data as active.
+ *
+ * Parameters:
+ *   display - Pointer to the structure with display data.
+ *
+ * Return: void
+ */
+void lcdst_setActiveDisplay(lcdst_t *display);
 
-/* Inversion States */
-#define st7735s_InversionOn 1
-#define st7735s_InversionOff 0 /* Preconfigured */
+/*
+ * Get the pointer to structure with the display data,
+ * which is currently active.
+ *
+ * Parameters: none
+ * Return: Pointer to the structure with display data.
+ *
+ */
+lcdst_t *lcdst_getActiveDisplay(void);
 
-/* Gamma States */
-#define st7735s_Gamma1 1 /* 1.0 */
-#define st7735s_Gamma2 2 /* 2.5 : Preconfigured */
-#define st7735s_Gamma3 4 /* 2.2 */
-#define st7735s_Gamma4 8 /* 1.8 */
+/*
+ * Get the width of the currently active display.
+ *
+ * Parameters: none
+ * Return: The width of the currently active display.
+ *
+ */
+uint8 lcdst_getWidth(void);
 
-/* Orientation States */
-#define st7735s_Orientation_Portrait 0 /* Preconfigured */
-#define st7735s_Orientation_Landscape 1
+/*
+ * Get the height of the currently active display.
+ *
+ * Parameters: none
+ * Return: The height of the currently active display.
+ *
+ */
+uint8 lcdst_getHeight(void);
+
+/*
+ * Set the orientation of the currently active display.
+ *
+ * Parameters:
+ *   orientation - Choose one orientation: 0/1/2/3.
+ *
+ * Return: void
+ */
+void lcdst_setOrientation(uint8 orientation);
+
+/*
+ * Set the gamma correction for the currently active display.
+ *
+ * Parameters:
+ *   state - Choose one gamma correction: 0/1/2/3.
+ *
+ * Return: void
+ */
+void lcdst_setGamma(uint8 state);
+
+/*
+ * Set the color inversion for the currently active display.
+ *
+ * Parameters:
+ *   state - Choose one: 0 = 0FF; 1 = ON.
+ *
+ * Return: void
+ */
+void lcdst_setInversion(uint8 state);
+
+/*
+ * Set the drawing area on the currently active display.
+ *
+ * Parameters:
+ *   x1 - The X parameter of the first point.
+ *   y1 - The Y parameter of the first point.
+ *   x2 - The X parameter of the second point.
+ *   y2 - The Y parameter of the second point.
+ *
+ * Return: Confirmation of the occurrence or non-occurrence of an error.
+ * 0 - The error did not occur; 1 - The error occurred.
+ *
+ */
+uint8 lcdst_setWindow(uint8 x1, uint8 y1, uint8 x2, uint8 y2);
+
+/*
+ * Set the currently active display to RAM modification mode.
+ *
+ * Parameters: none
+ * Return: void
+ */
+void lcdst_activateRamWrite(void);
+
+/*
+ * Send the raw pixel color to the currently active display.
+ *
+ * Parameters:
+ *   r - The intensity of the red color on a scale from 0 to 255.
+ *   g - The intensity of the green color on a scale from 0 to 255.
+ *   b - The intensity of the blue color on a scale from 0 to 255.
+ *
+ * Return: void
+ */
+void lcdst_pushPx(uint8 r, uint8 g, uint8 b);
+
+/*
+ * Send two raw pixel colors to the currently active display.
+ * This is a function for a pixel with a reduced number of bits.
+ *
+ * Parameters:
+ *   r - The intensity of the red color for the first pixel
+ *       on a scale from 0 to 15.
+ *   g - The intensity of the green color for the first pixel
+ *       on a scale from 0 to 15.
+ *   b - The intensity of the blue color for the first pixel
+ *       on a scale from 0 to 15.
+ *   rr - The intensity of the red color for the second pixel
+ *       on a scale from 0 to 15.
+ *   gg - The intensity of the green color for the second pixel
+ *       on a scale from 0 to 15.
+ *   bb - The intensity of the blue color for the second pixel
+ *       on a scale from 0 to 15.
+ *
+ * Return: void
+ */
+void lcdst_pushRPx(uint8 r, uint8 g, uint8 b, uint8 rr, uint8 gg, uint8 bb);
+
+/*
+ * Draw one pixel on the currently active display.
+ * The color intensity scale for a normal pixel is from 0 to 255.
+ * The color intensity scale for the reduced pixel is from 0 to 15.
+ *
+ * Parameters:
+ *   x - The X parameter of the pixel.
+ *   y - The Y parameter of the pixel.
+ *   r - The intensity of the red color.
+ *   g - The intensity of the green color.
+ *   b - The intensity of the blue color.
+ *
+ * Return: void
+ */
+void lcdst_drawPx(uint8 x, uint8 y, uint8 r, uint8 g, uint8 b);
+
+/*
+ * Draw a horizontal line on the currently active display.
+ * The color intensity scale for a normal pixel is from 0 to 255.
+ * The color intensity scale for the reduced pixel is from 0 to 15.
+ *
+ * Parameters:
+ *   x - Parameter X of the left end of the line.
+ *   y - Parameter Y of the left end of the line.
+ *   l - The length of the line.
+ *   r - The intensity of the red color.
+ *   g - The intensity of the green color.
+ *   b - The intensity of the blue color.
+ *
+ * Return: void
+ */
+void lcdst_drawHLine(uint8 x, uint8 y, uint8 l, uint8 r, uint8 g, uint8 b);
+
+/*
+ * Draw a vertical line on the currently active display.
+ * The color intensity scale for a normal pixel is from 0 to 255.
+ * The color intensity scale for the reduced pixel is from 0 to 15.
+ *
+ * Parameters:
+ *   x - The X parameter of the upper end of the line.
+ *   y - The Y parameter of the upper end of the line.
+ *   l - The length of the line.
+ *   r - The intensity of the red color.
+ *   g - The intensity of the green color.
+ *   b - The intensity of the blue color.
+ *
+ * Return: void
+ */
+void lcdst_drawVLine(uint8 x, uint8 y, uint8 l, uint8 r, uint8 g, uint8 b);
+
+/*
+ * Draw a rectangle on the currently active display.
+ * The color intensity scale for a normal pixel is from 0 to 255.
+ * The color intensity scale for the reduced pixel is from 0 to 15.
+ *
+ * Parameters:
+ *   x - Parameter X of the upper left corner of the rectangle.
+ *   y - Parameter Y of the upper left corner of the rectangle.
+ *   w - The width of the rectangle.
+ *   h - The height of the rectangle.
+ *   r - The intensity of the red color.
+ *   g - The intensity of the green color.
+ *   b - The intensity of the blue color.
+ *
+ * Return: void
+ */
+void lcdst_drawRect(uint8 x, uint8 y, uint8 w, uint8 h,
+					uint8 r, uint8 g, uint8 b);
+
+/*
+ * Draw a filled rectangle on the currently active display.
+ * The color intensity scale for a normal pixel is from 0 to 255.
+ * The color intensity scale for the reduced pixel is from 0 to 15.
+ *
+ * Parameters:
+ *   x - Parameter X of the upper left corner of the rectangle.
+ *   y - Parameter Y of the upper left corner of the rectangle.
+ *   w - The width of the rectangle.
+ *   h - The height of the rectangle.
+ *   r - The intensity of the red color.
+ *   g - The intensity of the green color.
+ *   b - The intensity of the blue color.
+ *
+ * Return: void
+ */
+void lcdst_drawFRect(uint8 x, uint8 y, uint8 w, uint8 h,
+					uint8 r, uint8 g, uint8 b);
+
+/*
+ * Fill the entire screen with one color of the currently active display.
+ * The color intensity scale for a normal pixel is from 0 to 255.
+ * The color intensity scale for the reduced pixel is from 0 to 15.
+ *
+ * Parameters:
+ *   r - The intensity of the red color.
+ *   g - The intensity of the green color.
+ *   b - The intensity of the blue color.
+ *
+ * Return: void
+ */
+void lcdst_drawScreen(uint8 r, uint8 g, uint8 b);
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* LIB_ST7735S_H */
+#endif /* _LIBRARY_ST7735S_ */

@@ -34,5 +34,4 @@ Go to [Documentation](documentation/readme.md)
 
 ## License
 [MIT License](license.txt)
-
 Copyright (c) 2018, Michal Kozakiewicz, github.com/michal037

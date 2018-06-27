@@ -1,16 +1,17 @@
 #
 # MIT License
-# Copyright (c) from 2017, Michal Kozakiewicz, github.com/michal037
+# Copyright (c) 2018, Michal Kozakiewicz, github.com/michal037
+#
+# Version: rpi-v1.1
+# Standard: GCC-C11
 #
 
-# Can be edit
-OUTNAME=st7735s_testapp
+OUTNAME=lcdtest
 EXAMPLE=main.c
 
-# Do not edit
 CC=gcc
 CFLAGS=-Wall -O2
-SOURCES=st7735s.c st7735s.h
+SOURCES=st7735s.h st7735s.c
 LIBS=-lwiringPi
 
 .PHONY: help compile run clean
@@ -19,8 +20,8 @@ help:
 	@echo "MAKEFILE HELP:\n Use:\n  make compile/run/clean/help"
 
 compile:
-	@clear # Clear display
-	$(CC) $(LIBS) $(CFLAGS) -o $(OUTNAME) $(EXAMPLE) $(SOURCES)
+	@clear
+	$(CC) $(LIBS) $(CFLAGS) -o $(OUTNAME) $(SOURCES) $(EXAMPLE)
 
 clean:
 	rm -rf $(OUTNAME)
