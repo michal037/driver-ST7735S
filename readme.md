@@ -25,7 +25,7 @@ Be careful with the rest of lines.
 | 8 | LED | Backlight |
 
 ## Documentation
-Go to [Documentation](documentation/readme.md)
+Go to [documentation](documentation/readme.md).
 
 ## Reporting issues
 Please feel free to report issues.
