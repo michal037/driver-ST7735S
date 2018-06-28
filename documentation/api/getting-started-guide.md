@@ -14,4 +14,4 @@
 4. Download the [source code](/source) to the ST7735S driver from this repository.
 5. Configure the `lcdst_init()` function in the [main.c file](/source/main.c).
 6. To run the example program, run the `make run` command in the directory with the source files.
-7. Read the description of the functions in the [st7735s.h file](/source/st7735s.h).
+7. Read the description of the functions in the [st7735s.h file](/source/st7735s.h) for more details.
