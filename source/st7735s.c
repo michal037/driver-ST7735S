@@ -376,14 +376,14 @@ void lcdst_drawHLine(uint8 x, uint8 y, uint8 l, uint8 r, uint8 g, uint8 b)
 {
 	lcdst_frpx data;
 	
+	/* Draw only in the display space */
+	if(l == 0) return;
+	if((x+l-1) >= activeDisplay->width) l = activeDisplay->width - x;
+	
 	/* Prepare the pixels */
 	data.raw.rr = data.raw.r = r & 0x0F;
 	data.raw.gg = data.raw.g = g & 0x0F;
 	data.raw.bb = data.raw.b = b & 0x0F;
-	
-	/* Draw only in the display space */
-	if(l == 0) return;
-	if((x+l-1) >= activeDisplay->width) l = activeDisplay->width - x;
 	
 	/* Draw the line */
 	if(lcdst_setWindow(x, y, x+l-1, y)) return;
@@ -399,14 +399,14 @@ void lcdst_drawVLine(uint8 x, uint8 y, uint8 l, uint8 r, uint8 g, uint8 b)
 {
 	lcdst_frpx data;
 	
+	/* Draw only in the display space */
+	if(l == 0) return;
+	if((y+l-1) >= activeDisplay->height) l = activeDisplay->height - y;
+	
 	/* Prepare the pixels */
 	data.raw.rr = data.raw.r = r & 0x0F;
 	data.raw.gg = data.raw.g = g & 0x0F;
 	data.raw.bb = data.raw.b = b & 0x0F;
-	
-	/* Draw only in the display space */
-	if(l == 0) return;
-	if((y+l-1) >= activeDisplay->height) l = activeDisplay->height - y;
 	
 	/* Draw the line */
 	if(lcdst_setWindow(x, y, x, y+l-1)) return;
@@ -423,15 +423,15 @@ void lcdst_drawFRect(uint8 x, uint8 y, uint8 w, uint8 h,
 {
 	lcdst_frpx data;
 	
-	/* Prepare the pixels */
-	data.raw.rr = data.raw.r = r & 0x0F;
-	data.raw.gg = data.raw.g = g & 0x0F;
-	data.raw.bb = data.raw.b = b & 0x0F;
-	
 	/* Draw only in the display space */
 	if((w == 0) || (h == 0)) return;
 	if((x+w-1) >= activeDisplay->width)  w = activeDisplay->width  - x;
 	if((y+h-1) >= activeDisplay->height) h = activeDisplay->height - y;
+	
+	/* Prepare the pixels */
+	data.raw.rr = data.raw.r = r & 0x0F;
+	data.raw.gg = data.raw.g = g & 0x0F;
+	data.raw.bb = data.raw.b = b & 0x0F;
 	
 	/* Draw the filed rectangle */
 	if(lcdst_setWindow(x, y, x+w-1, y+h-1)) return;
