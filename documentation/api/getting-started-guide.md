@@ -1,7 +1,7 @@
 # Getting started guide
 
-1. Enable support for the [hardware SPI interface](https://www.raspberrypi.org/documentation/hardware/raspberrypi/spi/README.md) using [raspi-config](https://www.raspberrypi.org/documentation/configuration/raspi-config.md).
-2. Download and install the official [Wiring Pi library](http://wiringpi.com/download-and-install/).
+1. Download and install the official [Wiring Pi library](http://wiringpi.com/download-and-install/).
+2. Enable support for the [hardware SPI interface](https://www.raspberrypi.org/documentation/hardware/raspberrypi/spi/README.md) using [raspi-config](https://www.raspberrypi.org/documentation/configuration/raspi-config.md).
 3. Connect the display to the [Raspberry Pi GPIO interface](https://www.raspberrypi.org/documentation/usage/gpio/README.md). You can display the GPIO list with the `gpio readall` command.
    * **VCC** to pin number **1** (3,3V).
    * **GND** to pin number **6** (0V).
