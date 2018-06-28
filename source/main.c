@@ -14,34 +14,37 @@ int main(int argc, char *argv[])
 {
 	lcdst_t *myDisplay = NULL;
 	
-	/* Setup the WiringPi library */
+	/* Initialize the Wiring Pi library */
 	wiringPiSetup();
 	
-	/* Initialize the display and receive the pointer */
-	myDisplay = lcdst_init(15000000, 0, 9, 8);
+	/* Initialize the display and receive pointer */
+	myDisplay = lcdst_init(30000000, 0, 9, 8);
 	
-	/* Fill the entire screen with black color */
+	/* Print received pointer */
+	printf("myDisplay: %p\n", myDisplay);
+	
+	/* Fill the display */
+	lcdst_drawScreen(0, 70, 160);
 	lcdst_drawScreen(0, 0, 0);
 	
-	/* Draw the pixels */
-	lcdst_drawPx(49, 70, 255, 255, 255);
-	lcdst_drawPx(55, 70, 255, 255, 255);
-	
 	/* Draw the lines */
-	lcdst_drawHLine(0, 49, 128, 0, 0, 255);
-	lcdst_drawVLine(117, 0, 160, 255, 255, 0);
+	lcdst_drawHLine(0, 149, 128, 0, 255, 255);
+	lcdst_drawHLine(0, 139, 128, 255, 255, 0);
+	lcdst_drawVLine(117, 0, 160, 0, 255, 255);
+	lcdst_drawVLine(107, 0, 160, 255, 255, 0);
 	
 	/* Draw the rectangles */
-	lcdst_drawRect(9, 9, 15, 15, 255, 255, 255);
-	lcdst_drawRect(9, 29, 15, 15, 255, 255, 255);
-	lcdst_drawFRect(29, 29, 15, 15, 150, 0, 255);
+	lcdst_drawRect(10, 10, 10, 10, 0, 255, 255);
+	lcdst_drawRect(10, 30, 10, 10, 255, 255, 0);
+	lcdst_drawFRect(30, 10, 10, 10, 0, 255, 255);
+	lcdst_drawFRect(30, 30, 10, 10, 255, 255, 0);
 	
-	/* Push the raw data */
-	lcdst_setWindow(50, 120, 100, 150);
-	for(int i=0; i<1000 ;i++) lcdst_pushPx(255, 255, 0);
+	/* Send the raw data */
+	lcdst_setWindow(20, 20, 29, 29);
+	for(uint8 i=0; i<100; i++) lcdst_pushPx(255, 0, 255);
+	lcdst_setWindow(0, 0, 127, 159); /* Optional reset */
 	
-	/* Reset the specified display and clear the previously assigned memory */
-	printf("Pointer: %p\n", myDisplay);
+	/* Uninitialize the display */
 	//lcdst_uninit(myDisplay);
 	
 	return 0;
