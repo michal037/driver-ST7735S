@@ -11,4 +11,7 @@
    * **SDA** to pin number **19** (MOSI).
    * **SCK** to pin number **23** (SCLK).
    * **LED** to pin number **17** (3,3V).
-4. 
+4. Download the [source code](https://github.com/michal037/driver-ST7735S/tree/master/source) to the ST7735S driver from this repository.
+5. Configure the `lcdst_init()` function in the [main.c file](https://github.com/michal037/driver-ST7735S/blob/master/source/main.c).
+6. To run the example program, run the `make run` command in the directory with the source files.
+7. Read the description of the functions in the [st7735s.h file](https://github.com/michal037/driver-ST7735S/blob/master/source/st7735s.h).
