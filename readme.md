@@ -2,7 +2,6 @@
 [![image](documentation/img/st7735s-small.png)](documentation/img/st7735s-full.png)
 
 ## Parameters
-* **Display size:** 1,8 [inch]
 * **Resolution:** 128 x 160 [px]
 * **Colors:** 262144
 * **Driver:** [ST7735S](documentation/datasheet/st7735s-datasheet-v1.4.pdf)
@@ -15,11 +14,11 @@ Be careful with the rest of lines.
 ## Pins
 | Pin | Name | Description |
 | :---: | :---: | --- |
-| 1 | VCC | Power Supply |
-| 2 | GND | Power Ground |
+| 1 | VCC | Voltage Common Collector |
+| 2 | GND | Ground |
 | 3 | CS | [SPI] Chip Select |
 | 4 | RESET | Reset |
-| 5 | A0 | Data/Command Switch |
+| 5 | A0 | Data/Command |
 | 6 | SDA | [SPI] Master Output Slave Input |
 | 7 | SCK | [SPI] Serial Clock |
 | 8 | LED | Backlight |
@@ -28,7 +27,7 @@ Be careful with the rest of lines.
 Go to [documentation](documentation/readme.md).
 
 ## Reporting issues
-Please feel free to report issues.
+Please feel free to [report issues](https://github.com/michal037/driver-ST7735S/issues).
 
 ## License
 This software is licensed under the MIT License. See the [license file](license.txt) for details.
