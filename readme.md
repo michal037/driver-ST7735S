@@ -1,11 +1,11 @@
 # [Sitronix ST7735S](http://www.sitronix.com.tw/en/product/Driver/mobile_display.html)
-[![ST7735S png](documentation/img/st7735s-small.png)](documentation/img/st7735s-full.png)
+[![image](documentation/img/st7735s-small.png)](documentation/img/st7735s-full.png)
 
 ## Parameters
 * **Display size:** 1,8 [inch]
 * **Resolution:** 128 x 160 [px]
 * **Colors:** 262144
-* **Driver:** [ST7735S](documentation/datasheet/st7735s_datasheet_v1.4.pdf)
+* **Driver:** [ST7735S](documentation/datasheet/st7735s-datasheet-v1.4.pdf)
 * **Protocol:** SPI
 * **Logic:** 3,3V
 
