@@ -2,7 +2,7 @@
 # MIT License
 # Copyright (c) 2018, Michal Kozakiewicz, github.com/michal037
 #
-# Version: rpi-v1.1
+# Version: 2.0.0
 # Standard: GCC-C11
 #
 
