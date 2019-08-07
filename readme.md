@@ -24,10 +24,7 @@ Be careful with the rest of lines.
 | 8 | LED | Backlight |
 
 ## Documentation
-Go to [documentation](documentation/readme.md).
-
-## Reporting issues
-Please feel free to [report issues](https://github.com/michal037/driver-ST7735S/issues).
+Open [documentation](documentation/readme.md).
 
 ## License
 This software is licensed under the MIT License. See the [license file](license.txt) for details.
