@@ -18,7 +18,13 @@ int main(int argc, char *argv[])
 	wiringPiSetup();
 	
 	/* Initialize the display and receive pointer */
-	myDisplay = lcdst_init(30000000, 0, 9, 8);
+	//lcdst_init(int channel, int port, int spiSpeed, int a0, int rs);
+	//		int channel, int port
+	///dev/spidev0.0	0	0
+	///dev/spidev0.1	0	1
+	///dev/spidev1.0	1	0
+	///dev/spidev1.1	1	1
+	myDisplay = lcdst_init(0, 0, 30000000, 9, 8);
 	
 	/* Print received pointer */
 	printf("myDisplay: %p\n", myDisplay);
