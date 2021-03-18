@@ -23,16 +23,21 @@ struct
 	void (* const delay)(unsigned int milliseconds);
 	void (* const pinMode)(int pin, int mode);
 	void (* const digitalWrite)(int pin, int value);
-	int  (* const spiSetup)(int channel, int speed);
+	int  (* const spiSetup)(int channel, int port, int speed, int mode);
 	int  (* const spiDataRW)(int channel, uint8 *data, int length);
 } static const gpio =
 {
 	delay,
 	pinMode,
 	digitalWrite,
-	wiringPiSPISetup,
+	wiringPiSPISetupMode,
 	wiringPiSPIDataRW
 };
+/*
+int wiringPiSPISetupMode (int channel, int port, int speed, int mode) ;
+int wiringPiSPISetup     (int channel, int speed) ;
+
+*/
 /****************************** END EASY PORT END *****************************/
 
 /* The global variable that stores the pointer to the structure,
@@ -72,7 +77,7 @@ static inline void *safeMalloc(size_t size)
 static inline void writeCommand(uint8 cmd)
 {
 	gpio.digitalWrite(activeDisplay->a0, LOW);
-	gpio.spiDataRW(activeDisplay->cs, &cmd, 1);
+	gpio.spiDataRW(activeDisplay->channel, &cmd, 1);
 } /* writeCommand */
 
 /*
@@ -84,17 +89,17 @@ static inline void writeCommand(uint8 cmd)
 static inline void writeData(uint8 data)
 {
 	gpio.digitalWrite(activeDisplay->a0, HIGH);
-	gpio.spiDataRW(activeDisplay->cs, &data, 1);
+	gpio.spiDataRW(activeDisplay->channel, &data, 1);
 } /* writeData */
 
-lcdst_t *lcdst_init(int spiSpeed, int cs, int a0, int rs)
+lcdst_t *lcdst_init(int channel, int port, int spiSpeed, int a0, int rs)
 {
 	/* Create the one instance of the lcdst_t structure and activate it */
 	lcdst_t *instance = (lcdst_t *) safeMalloc(sizeof(lcdst_t));
 	lcdst_setActiveDisplay(instance);
 	
 	/* Assign specific pins */
-	instance->cs = cs;
+	instance->channel = channel;
 	instance->a0 = a0;
 	instance->rs = rs;
 	/*
@@ -114,7 +119,7 @@ lcdst_t *lcdst_init(int spiSpeed, int cs, int a0, int rs)
 	}
 	
 	/* Configure the SPI interface */
-	if(gpio.spiSetup(instance->cs, spiSpeed) == -1)
+	if(gpio.spiSetup(channel, port, spiSpeed, 0) == -1)
 	{
 		fprintf(stderr, "Failed to setup the SPI interface!\n");
 		exit(EXIT_FAILURE);
