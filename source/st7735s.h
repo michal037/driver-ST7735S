@@ -32,7 +32,7 @@ extern "C" {
 /* The data type for one display */
 typedef struct
 {
-	int cs, a0, rs;
+	int channel, a0, rs;
 	uint8 width, height;
 } lcdst_t;
 
@@ -42,14 +42,14 @@ typedef struct
  *
  * Parameters:
  *   spiSpeed - Speed of the SPI interface.
- *   cs - Chip selection pin.
+ *   channel - spi channel.
  *   a0 - Data/Command pin.
  *   rs - Optional reset pin. If you do not use it, enter -1.
  *
  * Return: Pointer to the structure with display data.
  *
  */
-lcdst_t *lcdst_init(int spiSpeed, int cs, int a0, int rs);
+lcdst_t *lcdst_init(int channel, int port, int spiSpeed, int a0, int rs);
 
 /*
  * Reset the specified display and clear the previously assigned memory.
