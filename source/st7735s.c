@@ -17,27 +17,75 @@
  * in gpio structure.
  */
 #include <wiringPi.h>
-#include <wiringPiSPI.h>
-struct
-{
-	void (* const delay)(unsigned int milliseconds);
-	void (* const pinMode)(int pin, int mode);
-	void (* const digitalWrite)(int pin, int value);
-	int  (* const spiSetup)(int channel, int port, int speed, int mode);
-	int  (* const spiDataRW)(int channel, uint8 *data, int length);
-} static const gpio =
-{
-	delay,
-	pinMode,
-	digitalWrite,
-	wiringPiSPISetupMode,
-	wiringPiSPIDataRW
-};
-/*
-int wiringPiSPISetupMode (int channel, int port, int speed, int mode) ;
-int wiringPiSPISetup     (int channel, int speed) ;
+#include <linux/spi/spidev.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <sys/ioctl.h>
+#include <string.h>
 
-*/
+#define SPI_BUF_SIZE 4096 //TODO get from /sys/module/spidev/parameters/bufsiz
+
+static const uint8_t     spiBPW   = 8 ;
+static const uint16_t    spiDelay = 0 ;
+
+void getDevice(char* spidev, int channel, int port) {
+    sprintf(spidev, "/dev/spidev%d.%d", channel, port);
+}
+
+int wiringPiSPISetupMode (spi_t *sp)
+{
+    int fd ;
+
+    sp->mode    &= 3 ;	// Mode is 0, 1, 2 or 3
+    sp->channel &= 1 ;	// Channel is 0 or 1
+
+    static char spidev[14];
+
+    getDevice(spidev, sp->channel, sp->port);
+    printf("Opening device %s\n", spidev); 
+
+    if ((fd = open (spidev, O_RDWR)) < 0) {
+	return wiringPiFailure (WPI_ALMOST, "Unable to open SPI device: %s\n", strerror (errno)) ;
+    }
+
+// Set SPI parameters.
+
+    if (ioctl (fd, SPI_IOC_WR_MODE, &sp->mode) < 0) {
+	return wiringPiFailure (WPI_ALMOST, "SPI Mode Change failure: %s\n", strerror (errno)) ;
+    }
+
+    if (ioctl (fd, SPI_IOC_WR_BITS_PER_WORD, &spiBPW) < 0) {
+	return wiringPiFailure (WPI_ALMOST, "SPI BPW Change failure: %s\n", strerror (errno)) ;
+    }
+
+    if (ioctl (fd, SPI_IOC_WR_MAX_SPEED_HZ, &sp->speed) < 0) {
+	return wiringPiFailure (WPI_ALMOST, "SPI Speed Change failure: %s\n", strerror (errno)) ;
+    }
+
+    sp->fd = fd;
+
+    return fd ;
+}
+
+int wiringPiSPIDataRW (spi_t *sp, unsigned char *data, int len)
+{
+  struct spi_ioc_transfer spi ;
+
+// Mentioned in spidev.h but not used in the original kernel documentation
+//	test program )-:
+
+    memset (&spi, 0, sizeof (spi)) ;
+
+    spi.tx_buf        = (unsigned long)data ;
+    spi.rx_buf        = (unsigned long)data ;
+    spi.len           = len ;
+    spi.delay_usecs   = spiDelay ;
+    spi.speed_hz      = sp->speed ;
+    spi.bits_per_word = spiBPW ;
+
+    return ioctl (sp->fd, SPI_IOC_MESSAGE(1), &spi) ;
+}
+
 /****************************** END EASY PORT END *****************************/
 
 /* The global variable that stores the pointer to the structure,
@@ -76,8 +124,8 @@ static inline void *safeMalloc(size_t size)
  */
 static inline void writeCommand(uint8 cmd)
 {
-	gpio.digitalWrite(activeDisplay->a0, LOW);
-	gpio.spiDataRW(activeDisplay->channel, &cmd, 1);
+	digitalWrite(activeDisplay->a0, LOW);
+	wiringPiSPIDataRW(&activeDisplay->spi_params, &cmd, 1);
 } /* writeCommand */
 
 /*
@@ -88,9 +136,28 @@ static inline void writeCommand(uint8 cmd)
  */
 static inline void writeData(uint8 data)
 {
-	gpio.digitalWrite(activeDisplay->a0, HIGH);
-	gpio.spiDataRW(activeDisplay->channel, &data, 1);
+	digitalWrite(activeDisplay->a0, HIGH);
+	wiringPiSPIDataRW(&activeDisplay->spi_params, &data, 1);
 } /* writeData */
+
+
+void writeDataBuf(uint8 *data, unsigned len)
+{
+	digitalWrite(activeDisplay->a0, HIGH);
+//write by 4k page
+//	printf("write to %d  %d \n", activeDisplay->spi_params.channel, activeDisplay->spi_params.port);
+	while(1) {
+	    if(len > SPI_BUF_SIZE){
+		wiringPiSPIDataRW(&activeDisplay->spi_params, data, SPI_BUF_SIZE);
+		len -= SPI_BUF_SIZE;
+		data += SPI_BUF_SIZE;
+	    } else {
+		wiringPiSPIDataRW(&activeDisplay->spi_params, data, len);
+		break;
+	    }
+	}
+} /* writeData */
+
 
 lcdst_t *lcdst_init(int channel, int port, int spiSpeed, int a0, int rs)
 {
@@ -102,6 +169,7 @@ lcdst_t *lcdst_init(int channel, int port, int spiSpeed, int a0, int rs)
 	instance->channel = channel;
 	instance->a0 = a0;
 	instance->rs = rs;
+
 	/*
 	 * instance->width; instance->height
 	 * The setting of this variables will take place
@@ -109,17 +177,21 @@ lcdst_t *lcdst_init(int channel, int port, int spiSpeed, int a0, int rs)
 	 */
 	
 	/* Configure the a0 pin. The logic level is not significant now. */
-	gpio.pinMode(instance->a0, OUTPUT);
+	pinMode(instance->a0, OUTPUT);
 	
 	/* If the rs pin is connected then configure it */
 	if(instance->rs != -1)
 	{
-		gpio.pinMode(instance->rs, OUTPUT);
-		gpio.digitalWrite(instance->rs, HIGH); /* Reset OFF */
+		pinMode(instance->rs, OUTPUT);
+		digitalWrite(instance->rs, HIGH); /* Reset OFF */
 	}
 	
 	/* Configure the SPI interface */
-	if(gpio.spiSetup(channel, port, spiSpeed, 0) == -1)
+	activeDisplay->spi_params.channel = channel;
+	activeDisplay->spi_params.port = port;
+	activeDisplay->spi_params.speed = spiSpeed;
+	activeDisplay->spi_params.mode = 0;
+	if(wiringPiSPISetupMode(&activeDisplay->spi_params) == -1)
 	{
 		fprintf(stderr, "Failed to setup the SPI interface!\n");
 		exit(EXIT_FAILURE);
@@ -127,11 +199,11 @@ lcdst_t *lcdst_init(int channel, int port, int spiSpeed, int a0, int rs)
 	
 	/* Software reset; Wait minimum 120ms */
 	writeCommand(0x01);
-	gpio.delay(150);
+	delay(150);
 	
 	/* Sleep out; Wait minimum 120ms */
 	writeCommand(0x11);
-	gpio.delay(150);
+	delay(150);
 	
 	/* Set the orientation and the gamma */
 	lcdst_setOrientation(0);
@@ -147,7 +219,7 @@ lcdst_t *lcdst_init(int channel, int port, int spiSpeed, int a0, int rs)
 	
 	/* Display ON; Wait 100ms before start */
 	writeCommand(0x29);
-	gpio.delay(100);
+	delay(100);
 	
 	return instance;
 } /* lcdst_init */
@@ -167,11 +239,11 @@ void lcdst_hardwareReset(lcdst_t *display)
 	if(display->rs == -1) return;
 	
 	/* Apply reset */
-	gpio.digitalWrite(display->rs, HIGH); /* Reset OFF */
-	gpio.digitalWrite(display->rs, LOW);  /* Reset ON */
-	gpio.delay(10);  /* Wait to activate */
-	gpio.digitalWrite(display->rs, HIGH); /* Reset OFF*/
-	gpio.delay(150); /* Wait before use */
+	digitalWrite(display->rs, HIGH); /* Reset OFF */
+	digitalWrite(display->rs, LOW);  /* Reset ON */
+	delay(10);  /* Wait to activate */
+	digitalWrite(display->rs, HIGH); /* Reset OFF*/
+	delay(150); /* Wait before use */
 } /* lcdst_hardwareReset */
 
 void lcdst_setActiveDisplay(lcdst_t *display)
@@ -194,34 +266,37 @@ uint8 lcdst_getHeight(void)
 	return activeDisplay->height;
 } /* lcdst_getHeight */
 
+#define MY (1 << 7)
+#define MX (1 << 6)
+#define MV (1 << 5)
 void lcdst_setOrientation(uint8 orientation)
 {
 	writeCommand(0x36); /* Memory Data Access Control */
 
 	switch(orientation)
 	{
-		case 1:
-			writeData(0x60); /* MX + MV */
+		case 1: //90 deg
+			writeData(MX | MV); /* MX + MV */
 			activeDisplay->width  = 160;
 			activeDisplay->height = 128;
 			lcdst_setWindow(0, 0, 159, 127);
 			break;
 
-		case 2:
-			writeData(0xC0); /* MY + MX */
+		case 2: // 0 deg
+			writeData(MX | MY); /* MY + MX */
 			activeDisplay->width  = 128;
 			activeDisplay->height = 160;
 			lcdst_setWindow(0, 0, 127, 159);
 			break;
 
-		case 3:
-			writeData(0xA0); /* MY + MV */
+		case 3: // 270 deg
+			writeData(MY | MV); /* MY + MV */
 			activeDisplay->width  = 160;
 			activeDisplay->height = 128;
 			lcdst_setWindow(0, 0, 159, 127);
 			break;
 
-		default:
+		default: //180 deg
 			writeData(0x00); /* None */
 			activeDisplay->width  = 128;
 			activeDisplay->height = 160;
