@@ -28,12 +28,19 @@ extern "C" {
 #ifndef uint8
 #define uint8 unsigned char
 #endif
+
+typedef struct
+{
+	int fd;
+	unsigned channel, port, speed, mode;
+} spi_t;
  
 /* The data type for one display */
 typedef struct
 {
-	int cs, a0, rs;
+	int channel, a0, rs;
 	uint8 width, height;
+	spi_t spi_params;
 } lcdst_t;
 
 /*
@@ -42,14 +49,14 @@ typedef struct
  *
  * Parameters:
  *   spiSpeed - Speed of the SPI interface.
- *   cs - Chip selection pin.
+ *   channel - spi channel.
  *   a0 - Data/Command pin.
  *   rs - Optional reset pin. If you do not use it, enter -1.
  *
  * Return: Pointer to the structure with display data.
  *
  */
-lcdst_t *lcdst_init(int spiSpeed, int cs, int a0, int rs);
+lcdst_t *lcdst_init(int channel, int port, int spiSpeed, int a0, int rs);
 
 /*
  * Reset the specified display and clear the previously assigned memory.
@@ -161,6 +168,8 @@ uint8 lcdst_setWindow(uint8 x1, uint8 y1, uint8 x2, uint8 y2);
  * Return: void
  */
 void lcdst_activateRamWrite(void);
+
+void writeDataBuf(uint8 *data, unsigned len);
 
 /*
  * Send the raw pixel color to the currently active display.
